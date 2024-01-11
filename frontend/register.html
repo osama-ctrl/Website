@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Registration Form</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f2f2f2;
+      }
+
+      .custom-form {
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border: 2px solid #3498db;
+        margin-top: 100px;
+      }
+
+      .form-group label {
+        color: #333;
+      }
+
+      .form-control {
+        border: 1px solid #3498db;
+      }
+
+      .btn-primary {
+        background-color: #3498db;
+        border: 2px solid #3498db;
+        border-radius: 5px;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+        border: 2px solid #2980b9;
+      }
+
+      .alert-success {
+        background-color: #2ecc71;
+        color: #fff;
+        border: 2px solid #2ecc71;
+      }
+
+      .alert-danger {
+        background-color: #e74c3c;
+        color: #fff;
+        border: 2px solid #e74c3c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div
+            class="alert col-md-6 mx-auto"
+            id="message"
+            style="display: none"
+          ></div>
+          <form
+            class="custom-form"
+            id="registration-form"
+            action="http://127.0.0.1:5500/frontend/register.html"
+            method="post"
+          >
+            <h2 class="text-center mb-4">Registration Form</h2>
+
+            <!-- Name -->
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                placeholder="Enter your name"
+                required
+              />
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group">
+              <label for="image">Profile Image</label>
+              <input
+                type="file"
+                class="form-control-file"
+                id="image"
+                name="avatar"
+                accept="image/*"
+                required
+              />
+            </div>
+
+            <!-- Role -->
+            <div class="form-group">
+              <label for="role">Role</label>
+              <select class="form-control" id="role" name="role" required>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary btn-block mt-4">
+              Register
+            </button>
+          </form>
+         
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const registrationForm = document.getElementById("registration-form");
+        const messageDiv = document.getElementById("message");
+
+        registrationForm.addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const formData = new FormData(registrationForm);
+
+          try {
+            const response = await axios.post(
+              "http://localhost:5023/api/v2/registeruser",
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data", // Use the correct content type
+                },
+              }
+            );
+
+            const data = response.data;
+
+            if (response.status >= 200 && response.status < 300) {
+              // Registration was successful
+              messageDiv.className = "alert alert-success";
+              messageDiv.textContent =
+                "Registration successful! You can now log in.";
+                setTimeout(() => {
+                  window.location.href =
+              "http://127.0.0.1:5500/frontend/login.html";
+                }, 3000);
+            } else {
+              // There was an error with the request
+              messageDiv.className = "alert alert-danger";
+            }
+
+            messageDiv.style.display = "block";
+          } catch (error) {
+            messageDiv.className = "alert alert-danger";
+            messageDiv.textContent =
+              "An error occurred: Enter Valid Email and Passowrd ";
+            messageDiv.style.display = "block";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

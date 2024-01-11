@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Login Page</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f2f2f2;
+      }
+
+      .login-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin-top: 100px;
+        border: 2px solid #3498db;
+      }
+
+      .login-container h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      .register-btn-container {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .register-btn {
+        background-color: #2ecc71;
+        color: #fff;
+        border: 2px solid #2ecc71;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .register-btn:hover {
+        background-color: #27ae60;
+      }
+
+      .form-group label {
+        color: #333;
+      }
+
+      .form-control {
+        border: 1px solid #3498db;
+      }
+
+      .btn-primary {
+        background-color: #3498db;
+        border: 2px solid #3498db;
+        border-radius: 5px;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+        border: 2px solid #2980b9;
+      }
+
+      .alert-danger {
+        background-color: #e74c3c;
+        color: #fff;
+        border: 2px solid #e74c3c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div
+            id="error-message"
+            class="alert alert-danger"
+            style="display: none"
+          ></div>
+          <div
+            class="card login-container"
+          >
+            <div class="card-body">
+              <h2>Login</h2>
+              <form
+                class="custom-form"
+                id="login-form"
+                action="http://localhost:5023/api/v2/loginuser"
+                method="post"
+              >
+                <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="role">Role:</label>
+                  <select class="form-control" id="role" name="role" required>
+                    <option value="user">user</option>
+                    <option value="admin">admin</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                  Login
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="register-btn-container">
+            <a href="http://127.0.0.1:5500/frontend/register.html" class="register-btn">Register</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+      const loginForm = document.getElementById("login-form");
+      const errorMessage = document.getElementById("error-message");
+
+      loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const role = document.getElementById("role").value;
+
+        try {
+          const response = await axios.post(
+            "http://localhost:5023/api/v2/loginuser",
+            {
+              email,
+              password,
+              role,
+              name,
+            },
+            {
+              withCredentials: true,
+            }
+          );
+
+          const userRole = response.data.user.role;
+          const useremail = response.data.user.email;
+          const userpass = response.data.user.password;
+
+          const userToken = response.data.token;
+
+          console.log(userRole);
+          console.log(userToken);
+          console.log(userpass);
+          console.log(useremail);
+
+          // Store the token in a cookie using js-cookie
+          Cookies.set("token", userToken, { expires: 7, path: "/" }); // Token will expire in 7 days
+
+          const userName = response.data.user.name;
+          Cookies.set("userName", userName, { expires: 7, path: "/" });
+
+          const userId = response.data.user._id;
+          Cookies.set("userId", userId, { expires: 7, path: "/" });
+          console.log("this is user id", userId);
+
+          if (userRole === "user") {
+            window.location.href =
+              "http://127.0.0.1:5500/frontend/userDashboard.html";
+          } else if (userRole === "admin") {
+            window.location.href =
+              "http://127.0.0.1:5500/frontend/adminDashboard.html";
+          } else {
+            errorMessage.textContent = "Invalid role in the response";
+            errorMessage.style.display = "block";
+          }
+        } catch (error) {
+          errorMessage.textContent = "An error occurred: Invalid Email or Password " ;
+          errorMessage.style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>

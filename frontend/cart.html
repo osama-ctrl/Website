@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Include Bootstrap CSS and JavaScript -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <!-- Button to trigger the modal -->
+    <div class="modal" id="cartModal" tabindex="-1" role="dialog" data-backdrop="false">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Your Cart</h5>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody id="cartItems"> <!-- Cart items will be appended here -->
+                </tbody>
+                <tr>
+                  <td><strong>Total</strong></td>
+                  <td></td> <!-- Leave the quantity column empty -->
+                  <td id="cart-total-price"><strong>$0</strong></td>
+                </tr>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close-cart">Close</button>
+              <button type="button" class="btn btn-primary" id="checkoutButton">Checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+<script src="cart.js"></script>
+</body>
+</html>
